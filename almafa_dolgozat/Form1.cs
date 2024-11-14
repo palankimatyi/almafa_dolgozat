@@ -20,31 +20,29 @@ namespace almafa_dolgozat
         bool UtoKez = false;
         bool LeftMove = true;
         int num = 0;
+        //int utes = 0;
+        //int num2 = 0;
+        //int num3 = 0;
+
         public Form1()
         {
             InitializeComponent();
             Start();
             AlmaEsikEvent();
+            BiggerBasket();
         }
         void Start()
         {
-
-            Label pontszam = new Label();
-            this.Controls.Add(pontszam);
-            pontszam.Text = "Pontjaid: ";
-            pontszam.Top = 30;
-            pontszam.Left = 400;
-            pontszam.BackColor = Color.Gray;
-
+            pontszam.Text = "Gyűjtött almák száma: ";
             
             this.Controls.Add(alma);
             alma.BackColor = Color.Red;
-            alma.Top = (Lomb.Height + 5);
+            alma.Top = (Lomb.Height + 1);
             alma.Left = (Lomb.Width + 5);
             alma.Height = 15;
             alma.Width = 15;
 
-            BodyMoveTimer.Interval = 15;
+            BodyMoveTimer.Interval = 1;
             BodyMoveTimer.Tick += (s, e) =>
             {
                 if(LeftMove && Hand.Left >= Torzs.Right)
@@ -59,8 +57,13 @@ namespace almafa_dolgozat
                     {
                         UtoKez = true;
                         HandMoveTimer.Start();
-                        almaFall = true; 
+                        almaFall = true;
+                        
                     }
+                    //else if(utes == 10)
+                    //{
+                       // almaFall = true; Első esésnél működött, utána nem.  
+                    //}
                 }
 
                 else if (!LeftMove)
@@ -85,9 +88,9 @@ namespace almafa_dolgozat
                             num++;
                             pontszam.Text = $"Pontjaid: {num}";
 
+                            alma.Top = (Lomb.Height + 1);
                             alma.Left = (Lomb.Width + 5);
-                            alma.Top = (Lomb.Height + 5);
-                            Hand.Left -= 35;
+                            Hand.Left -= 50;
                         }
                             
                     }
@@ -101,6 +104,7 @@ namespace almafa_dolgozat
                 if (Hand.Left == Torzs.Right)
                 {
                     Hand.Left += 15;
+                    //utes++;
                 }
                 else
                 {
@@ -110,12 +114,24 @@ namespace almafa_dolgozat
 
 
         }
+
+        void BiggerBasket()
+        {
+            button1.Click += (s, e) =>
+            {
+                if (num >= 10)
+                {
+                    button1.Text += 2;
+                };
+            };
+            
+        }
         void AlmaEsikEvent()
         {
             AppleFallTimer.Interval = 10;
             
             AppleFallTimer.Tick += (s, e) =>
-            {
+            {  
                 if (almaFall)
                 {
                     alma.Top += 1;
