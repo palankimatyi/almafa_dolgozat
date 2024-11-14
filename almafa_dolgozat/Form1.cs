@@ -28,10 +28,10 @@ namespace almafa_dolgozat
         }
         void Start()
         {
+
             Label pontszam = new Label();
             this.Controls.Add(pontszam);
-            alma.Top = (Lomb.Height + 5);
-            alma.Left = (Lomb.Width + 5);
+            pontszam.Text = "Pontjaid: ";
             pontszam.Top = 30;
             pontszam.Left = 400;
             pontszam.BackColor = Color.Gray;
@@ -39,6 +39,8 @@ namespace almafa_dolgozat
             
             this.Controls.Add(alma);
             alma.BackColor = Color.Red;
+            alma.Top = (Lomb.Height + 5);
+            alma.Left = (Lomb.Width + 5);
             alma.Height = 15;
             alma.Width = 15;
 
@@ -53,17 +55,17 @@ namespace almafa_dolgozat
                         Head.Left -= 1;
                         Body.Left -= 1;
                     }
-                    else if(Hand.Left == Torzs.Right && UtoKez)
+                    else if(Hand.Left == Torzs.Right)
                     {
-                        
                         UtoKez = true;
                         HandMoveTimer.Start();
                         almaFall = true; 
                     }
                 }
+
                 else if (!LeftMove)
                 {
-                    if(Kosar.Left != Hand.Left - 5)
+                    if(Kosar.Left != Hand.Left + 5)
                     {
                         Hand.Left += 1;
                         Head.Left += 1;
@@ -73,25 +75,36 @@ namespace almafa_dolgozat
                     else
                     {
                         if(alma.Top != Kosar.Top)
-                            alma.Top += 1;
+                           alma.Top += 1;
 
-                        if (alma.Top == Kosar.Top)
+                        else if (alma.Top == Kosar.Top)
+                        {
+                            LeftMove = true;
+                            UtoKez = false;
+                            almaFall = false;
                             num++;
+                            pontszam.Text = $"Pontjaid: {num}";
+
+                            alma.Left = (Lomb.Width + 5);
+                            alma.Top = (Lomb.Height + 5);
+                            Hand.Left -= 35;
+                        }
+                            
                     }
                 }
             };
             BodyMoveTimer.Start();
 
-            HandMoveTimer.Interval = 10;
+            HandMoveTimer.Interval = 100;
             HandMoveTimer.Tick += (ss, ee) =>
             {
                 if (Hand.Left == Torzs.Right)
                 {
-                    Hand.Left -= 15;
+                    Hand.Left += 15;
                 }
                 else
                 {
-                    Hand.Left += 15;
+                    Hand.Left -= 15;
                 }
             };
 
@@ -100,19 +113,25 @@ namespace almafa_dolgozat
         void AlmaEsikEvent()
         {
             AppleFallTimer.Interval = 10;
-            AppleFallTimer.Start();
+            
             AppleFallTimer.Tick += (s, e) =>
             {
-                if (Hand.Left == Torzs.Right)
+                if (almaFall)
                 {
                     alma.Top += 1;
                 }
-                //else if(Hand.Top == alma.Bottom)
-                //{
-                    
-                //}
+                if (alma.Bottom >= Hand.Top && LeftMove)
+                {
+                    HandMoveTimer.Stop();
+                    Hand.Left = Body.Right - 10;
+                    alma.Top = Hand.Top - 10;
+                    alma.Left = Body.Right + 10;
+                    almaFall = false;
+                    LeftMove = false;
+                }
             };
             
+            AppleFallTimer.Start();
         }
     }
 }
